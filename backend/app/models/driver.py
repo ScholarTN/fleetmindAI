@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.core.database import Base
 
 
+
 class DriverStatus(str, enum.Enum):
     AVAILABLE = "available"
     ON_DUTY = "on_duty"

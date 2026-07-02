@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
 
+
 class TruckStatus(str, enum.Enum):
     AVAILABLE = "available"
     IN_USE = "in_use"
