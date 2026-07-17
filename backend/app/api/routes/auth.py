@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from datetime import datetime, timezone
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.core.database import get_db
 from app.core.security import hash_password, verify_password, create_access_token, create_refresh_token
@@ -47,6 +48,34 @@ async def login(payload: UserLogin, db: AsyncSession = Depends(get_db)):
         refresh_token=create_refresh_token(user.id),
     )
 
+@router.post("/token")
+async def login_for_swagger(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(User).where(User.email == form_data.username)
+    )
+    user = result.scalar_one_or_none()
+
+    if not user or not verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials",
+        )
+
+    if not user.is_active:
+        raise HTTPException(
+            status_code=403,
+            detail="Account is deactivated",
+        )
+
+    user.last_login = datetime.now(timezone.utc)
+
+    return {
+        "access_token": create_access_token(user.id),
+        "token_type": "bearer",
+    }
 
 @router.get("/me", response_model=UserOut)
 async def me(current_user: User = Depends(get_current_user)):
