@@ -30,6 +30,15 @@ class DriverRepository(BaseRepository[Driver]):
             )
         )
         return result.scalar_one_or_none()
+    
+    async def update(
+        self,
+        db: AsyncSession,
+        driver: Driver,
+    ) -> Driver:
+        await db.commit()
+        await db.refresh(driver)
+        return driver
 
     async def list_active(
         self,
@@ -39,12 +48,25 @@ class DriverRepository(BaseRepository[Driver]):
     ):
         result = await db.execute(
             select(Driver)
-            .where(Driver.is_active == True)
+            .where(Driver.is_active.is_(True))
             .offset(offset)
             .limit(limit)
         )
 
         return result.scalars().all()
+    
+    async def delete(
+        self,
+        db: AsyncSession,
+        driver: Driver,
+    ) -> Driver:
+        driver.is_active = False
+
+        await db.commit()
+        await db.refresh(driver)
+
+        return driver
+    
 
 
 driver_repository = DriverRepository()

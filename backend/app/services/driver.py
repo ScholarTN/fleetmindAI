@@ -46,11 +46,14 @@ class DriverService:
         db: AsyncSession,
         driver_id: str,
     ):
-        driver = await self.repository.get_by_id(db, driver_id)
+        driver = await self.repository.get_by_id(
+            db,
+            driver_id,
+        )
 
         if not driver:
             raise HTTPException(
-                status_code=404,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="Driver not found",
             )
 
@@ -68,19 +71,71 @@ class DriverService:
             offset,
         )
 
+    async def update_driver(
+        self,
+        db: AsyncSession,
+        driver_id: str,
+        payload: DriverUpdate,
+    ):
+        driver = await self.get_driver(
+            db,
+            driver_id,
+        )
+
+        updates = payload.model_dump(exclude_unset=True)
+
+        if (
+            "email" in updates
+            and updates["email"] != driver.email
+        ):
+            existing = await self.repository.get_by_email(
+                db,
+                updates["email"],
+            )
+
+            if existing:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="Email already exists",
+                )
+
+        if (
+            "cdl_number" in updates
+            and updates["cdl_number"] != driver.cdl_number
+        ):
+            existing = await self.repository.get_by_cdl(
+                db,
+                updates["cdl_number"],
+            )
+
+            if existing:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="CDL number already exists",
+                )
+
+        for field, value in updates.items():
+            setattr(driver, field, value)
+
+        return await self.repository.update(
+            db,
+            driver,
+        )
+
     async def delete_driver(
         self,
         db: AsyncSession,
         driver_id: str,
     ):
-        driver = await self.get_driver(db, driver_id)
+        driver = await self.get_driver(
+            db,
+            driver_id,
+        )
 
-        driver.is_active = False
-
-        await db.commit()
-        await db.refresh(driver)
-
-        return driver
+        return await self.repository.delete(
+            db,
+            driver,
+        )
 
 
 driver_service = DriverService()
