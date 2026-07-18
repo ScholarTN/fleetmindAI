@@ -64,30 +64,6 @@ class IncidentSeverity(str, enum.Enum):
     CRITICAL = "critical"
 
 
-# ─── Truck ───────────────────────────────────────────────────────────────────
-
-class Truck(Base):
-    __tablename__ = "trucks"
-
-    id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    unit_number: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
-    make: Mapped[str] = mapped_column(String(50), nullable=False)
-    model: Mapped[str] = mapped_column(String(50), nullable=False)
-    year: Mapped[int] = mapped_column(Integer, nullable=False)
-    vin: Mapped[str] = mapped_column(String(17), unique=True, nullable=False)
-    license_plate: Mapped[str] = mapped_column(String(20), nullable=False)
-    status: Mapped[TruckStatus] = mapped_column(Enum(TruckStatus), default=TruckStatus.AVAILABLE)
-    odometer: Mapped[int] = mapped_column(Integer, default=0)
-    last_service_date: Mapped[date | None] = mapped_column(Date, nullable=True)
-    next_service_miles: Mapped[int] = mapped_column(Integer, default=0)
-    assigned_driver_id: Mapped[str | None] = mapped_column(String, nullable=True)
-    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
-    )
-
-
 # ─── Trailer ─────────────────────────────────────────────────────────────────
 
 class Trailer(Base):
