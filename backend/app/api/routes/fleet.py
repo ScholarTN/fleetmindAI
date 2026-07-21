@@ -6,7 +6,10 @@ from typing import Optional
 from datetime import datetime
 
 from app.core.database import get_db
-from app.models.fleet import Truck, Trailer, Load, Incident, TruckStatus, LoadStatus, LoadPriority, TrailerType, IncidentType, IncidentSeverity
+from app.models.truck import Truck, TruckStatus
+from app.models.trailer import Trailer, TrailerType
+from app.models.load import Load, LoadStatus, LoadPriority
+from app.models.incident import Incident, IncidentType, IncidentSeverity
 from app.models.user import User
 from app.api.dependencies.auth import get_current_user
 
