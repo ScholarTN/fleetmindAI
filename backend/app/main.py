@@ -11,6 +11,7 @@ from app.api.routes.fleet import router as fleet_router
 from app.api.routes.truck import router as truck_router
 from app.api.routes.trailer import router as trailers_router
 from app.api.routes.load import router as load_router
+from app.api.routes.incident import router as incident_router
 
 # ---------------------------------------------------------------------------
 # Application
@@ -67,6 +68,8 @@ app.include_router(trailers_router, prefix="/api/v1")
 #Load router
 app.include_router(load_router, prefix="/api/v1")
 
+#incident router
+app.include_router(incident_router, prefix="/api/v1")
 
 # ---------------------------------------------------------------------------
 # System endpoints

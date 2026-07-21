@@ -38,13 +38,14 @@ class Incident(Base):
         String, primary_key=True, default=lambda: str(uuid.uuid4())
     )
     incident_number: Mapped[str] = mapped_column(
-        String(30), unique=True, nullable=False
+        String(30), unique=True, nullable=False, index=True
     )
     incident_type: Mapped[IncidentType] = mapped_column(
         Enum(IncidentType, name="incidenttype"), nullable=False
     )
     severity: Mapped[IncidentSeverity] = mapped_column(
         Enum(IncidentSeverity, name="incidentseverity"),
+        nullable=False,
         default=IncidentSeverity.MEDIUM,
     )
     title: Mapped[str] = mapped_column(String(200), nullable=False)
@@ -60,8 +61,13 @@ class Incident(Base):
     )
     resolution_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     occurred_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
     )
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
     )
+   
