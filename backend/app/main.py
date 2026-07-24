@@ -12,6 +12,8 @@ from app.api.routes.truck import router as truck_router
 from app.api.routes.trailer import router as trailers_router
 from app.api.routes.load import router as load_router
 from app.api.routes.incident import router as incident_router
+from app.api.routes.dispatch import router as dispatch_router
+from app.routes.ai import router as ai_router
 
 # ---------------------------------------------------------------------------
 # Application
@@ -71,6 +73,11 @@ app.include_router(load_router, prefix="/api/v1")
 #incident router
 app.include_router(incident_router, prefix="/api/v1")
 
+#Dispatch router
+app.include_router(dispatch_router, prefix="/api/v1")
+
+app.include_router(ai_router)
+
 # ---------------------------------------------------------------------------
 # System endpoints
 # ---------------------------------------------------------------------------
@@ -89,6 +96,7 @@ async def root():
 @app.get("/health", tags=["System"])
 async def health():
     return {"status": "healthy"}
+
 
 
 logger.info("FleetMind AI application loaded")
