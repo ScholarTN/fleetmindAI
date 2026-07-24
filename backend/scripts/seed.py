@@ -191,7 +191,16 @@ async def seed():
             # Assign drivers to in-transit loads
             if load.status in (LoadStatus.IN_TRANSIT, LoadStatus.ASSIGNED) and drivers:
                 driver = random.choice([d for d in drivers if d.status == DriverStatus.DRIVING])
-                load.assigned_driver_id = driver.id
+                # load.assigned_driver_id = driver.id
+                dispatch_service = DispatchService(db)
+
+                await dispatch_service.assign(
+                    load_id=load.id,
+                    driver_id=driver.id,
+                    truck_id=truck.id,
+                    trailer_id=trailer.id,
+                )
+                
                 driver.current_load_id = load.id
 
             loads.append(load)

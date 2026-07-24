@@ -1,0 +1,9 @@
+pip install Faker
+
+pip install sentence-transformers
+
+pip install chromadb
+
+pip install langchain-text-splitters pypdf
+
+pip install langchain-openai
