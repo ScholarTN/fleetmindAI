@@ -1,10 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from app.ai.prompts import SYSTEM_PROMPT
 from app.ai.tools import DatabaseTools
-from app.ai.vector_store import similarity_search
+
 from app.core.config import settings
 
 
@@ -14,9 +14,9 @@ class FleetCopilot:
         self.db = db
         self.tools = DatabaseTools(db)
 
-        self.llm = ChatOpenAI(
-            api_key=settings.OPENAI_API_KEY,
-            model=settings.OPENAI_MODEL,
+        self.llm = ChatGroq(
+            model="llama-3.3-70b-versatile",
+            groq_api_key=settings.GROQ_API_KEY,
             temperature=0,
         )
 
@@ -42,11 +42,11 @@ Recent Incidents: {len(recent_incidents)}
         # Knowledge Base Context
         # ----------------------------
 
-        rag = similarity_search(question, n_results=5)
+       # rag = similarity_search(question, n_results=5)
 
-        documents = rag["documents"][0] if rag["documents"] else []
+       # documents = rag["documents"][0] if rag["documents"] else []
 
-        knowledge_context = "\n\n".join(documents)
+        knowledge_context = ""
 
         # ----------------------------
         # Final Prompt
