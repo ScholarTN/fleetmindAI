@@ -69,7 +69,7 @@ The platform is designed with AI integration in mind, allowing future deployment
 
 ---
 
-## Truck Management *(In Progress)*
+## Truck Management 
 
 - Truck Profiles
 - Fleet Status
